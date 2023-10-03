@@ -94,16 +94,34 @@ def initDeckHelp(bot_info_dict):
             if bot_hash in OlivaDiceCore.drawCardData.dictDeckIndex and type(OlivaDiceCore.drawCardData.dictDeckIndex[bot_hash]) == dict:
                 deck_name_tmp_list_index = {'内置牌堆': '内置牌堆:\n%s' % deck_name_tmp_list_str}
                 deck_name_list_index = {
-                    '扩展牌堆 %s' % deck_name_list_this: '%s:\n%s' % (
+                    f'扩展牌堆 {deck_name_list_this}': '%s:\n%s'
+                    % (
                         deck_name_list_this,
-                        '/'.join([
-                            deck_name_list_this_this
-                            for deck_name_list_this_this in OlivaDiceCore.drawCardData.dictDeckIndex[bot_hash][deck_name_list_this]
-                            if type(deck_name_list_this_this) == str and not deck_name_list_this_this.startswith('_')
-                        ])
+                        '/'.join(
+                            [
+                                deck_name_list_this_this
+                                for deck_name_list_this_this in OlivaDiceCore.drawCardData.dictDeckIndex[
+                                    bot_hash
+                                ][
+                                    deck_name_list_this
+                                ]
+                                if type(deck_name_list_this_this) == str
+                                and not deck_name_list_this_this.startswith(
+                                    '_'
+                                )
+                            ]
+                        ),
                     )
-                    for deck_name_list_this in OlivaDiceCore.drawCardData.dictDeckIndex[bot_hash]
-                    if type(deck_name_list_this) == str and type(OlivaDiceCore.drawCardData.dictDeckIndex[bot_hash][deck_name_list_this]) == list
+                    for deck_name_list_this in OlivaDiceCore.drawCardData.dictDeckIndex[
+                        bot_hash
+                    ]
+                    if type(deck_name_list_this) == str
+                    and type(
+                        OlivaDiceCore.drawCardData.dictDeckIndex[bot_hash][
+                            deck_name_list_this
+                        ]
+                    )
+                    == list
                 }
                 deck_name_tmp_list_index_check = [
                     deck_name_tmp_list_index_key

@@ -18,32 +18,32 @@ import OlivOS
 import OlivaDiceCore
 
 class Event(object):
-    def init(plugin_event, Proc):
-        OlivaDiceCore.msgReply.unity_init(plugin_event, Proc)
+    def init(self, Proc):
+        OlivaDiceCore.msgReply.unity_init(self, Proc)
 
-    def init_after(plugin_event, Proc):
-        OlivaDiceCore.msgReply.unity_init_after(plugin_event, Proc)
+    def init_after(self, Proc):
+        OlivaDiceCore.msgReply.unity_init_after(self, Proc)
 
-    def private_message(plugin_event, Proc):
-        OlivaDiceCore.msgReply.unity_reply(plugin_event, Proc)
+    def private_message(self, Proc):
+        OlivaDiceCore.msgReply.unity_reply(self, Proc)
 
-    def group_message(plugin_event, Proc):
-        OlivaDiceCore.msgReply.unity_reply(plugin_event, Proc)
+    def group_message(self, Proc):
+        OlivaDiceCore.msgReply.unity_reply(self, Proc)
 
-    def poke(plugin_event, Proc):
-        OlivaDiceCore.msgReply.poke_reply(plugin_event, Proc)
+    def poke(self, Proc):
+        OlivaDiceCore.msgReply.poke_reply(self, Proc)
 
-    def friend_add_request(plugin_event, Proc):
-        OlivaDiceCore.ordinaryInviteManager.unity_friend_add_request(plugin_event, Proc)
+    def friend_add_request(self, Proc):
+        OlivaDiceCore.ordinaryInviteManager.unity_friend_add_request(self, Proc)
 
-    def group_invite_request(plugin_event, Proc):
-        OlivaDiceCore.ordinaryInviteManager.unity_group_invite_request(plugin_event, Proc)
+    def group_invite_request(self, Proc):
+        OlivaDiceCore.ordinaryInviteManager.unity_group_invite_request(self, Proc)
 
-    def group_member_increase(plugin_event, Proc):
-        OlivaDiceCore.ordinaryInviteManager.unity_group_member_increase(plugin_event, Proc)
+    def group_member_increase(self, Proc):
+        OlivaDiceCore.ordinaryInviteManager.unity_group_member_increase(self, Proc)
 
-    def heartbeat(plugin_event, Proc):
-        OlivaDiceCore.pulse.unity_heartbeat(plugin_event, Proc)
+    def heartbeat(self, Proc):
+        OlivaDiceCore.pulse.unity_heartbeat(self, Proc)
 
-    def save(plugin_event, Proc):
-        OlivaDiceCore.msgReply.unity_save(plugin_event, Proc)
+    def save(self, Proc):
+        OlivaDiceCore.msgReply.unity_save(self, Proc)

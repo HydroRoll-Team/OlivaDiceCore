@@ -24,14 +24,14 @@ def initHelpDoc(bot_info_dict):
     for bot_info_dict_this in bot_info_dict:
         OlivaDiceCore.helpDocData.dictHelpDoc[bot_info_dict_this] = OlivaDiceCore.helpDocData.dictHelpDocTemp.copy()
         OlivaDiceCore.helpDocData.dictHelpDocDefault[bot_info_dict_this] = {}
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/unity')
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/unity/extend')
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/unity/extend/helpdoc')
-    customHelpDocDir = OlivaDiceCore.data.dataDirRoot + '/unity/extend/helpdoc'
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/unity')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/unity/extend')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/unity/extend/helpdoc')
+    customHelpDocDir = f'{OlivaDiceCore.data.dataDirRoot}/unity/extend/helpdoc'
     fileHelpDocList = os.listdir(customHelpDocDir)
     for fileHelpDocList_this in fileHelpDocList:
         customHelpDocFile = fileHelpDocList_this
-        customHelpDocPath = customHelpDocDir + '/' + customHelpDocFile
+        customHelpDocPath = f'{customHelpDocDir}/{customHelpDocFile}'
         try:
             with open(customHelpDocPath, 'r', encoding = 'utf-8') as customHelpDocPath_f:
                 obj_HelpDoc_this = json.loads(customHelpDocPath_f.read())
@@ -43,15 +43,15 @@ def initHelpDoc(bot_info_dict):
             continue
     for bot_info_dict_this in OlivaDiceCore.helpDocData.dictHelpDoc:
         botHash = bot_info_dict_this
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/extend')
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/extend/helpdoc')
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
-        customHelpDocDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/extend/helpdoc'
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/extend')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/extend/helpdoc')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
+        customHelpDocDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/extend/helpdoc'
         fileHelpDocList = os.listdir(customHelpDocDir)
         for fileHelpDocList_this in fileHelpDocList:
             customHelpDocFile = fileHelpDocList_this
-            customHelpDocPath = customHelpDocDir + '/' + customHelpDocFile
+            customHelpDocPath = f'{customHelpDocDir}/{customHelpDocFile}'
             try:
                 with open(customHelpDocPath, 'r', encoding = 'utf-8') as customHelpDocPath_f:
                     obj_HelpDoc_this = json.loads(customHelpDocPath_f.read())
@@ -59,9 +59,9 @@ def initHelpDoc(bot_info_dict):
                         OlivaDiceCore.helpDocData.dictHelpDoc[botHash].update(obj_HelpDoc_this['helpdoc'])
             except:
                 continue
-        customHelpDocDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
+        customHelpDocDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
         customHelpDocFile = 'helpdocDefault.json'
-        customHelpDocPath = customHelpDocDir + '/' + customHelpDocFile
+        customHelpDocPath = f'{customHelpDocDir}/{customHelpDocFile}'
         try:
             with open(customHelpDocPath, 'r', encoding = 'utf-8') as customHelpDocPath_f:
                 obj_HelpDoc_this = json.loads(customHelpDocPath_f.read())
@@ -97,11 +97,11 @@ def delHelpDocByBotHash(botHash, helpdocKey):
 
 def saveHelpDocByBotHash(botHash):
     if botHash in OlivaDiceCore.helpDocData.dictHelpDocDefault:
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
         try:
-            customHelpDocDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
+            customHelpDocDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
             customHelpDocFile = 'helpdocDefault.json'
-            customHelpDocPath = customHelpDocDir + '/' + customHelpDocFile
+            customHelpDocPath = f'{customHelpDocDir}/{customHelpDocFile}'
             with open(customHelpDocPath, 'w', encoding = 'utf-8') as customHelpDocPath_f:
                 customHelpDocPath_f.write(
                     json.dumps(
@@ -130,8 +130,7 @@ def getHelp(key_str, bot_hash, plugin_event = None):
                 tmp_tHelpDocResult = OlivaDiceCore.helpDocData.dictHelpDoc[bot_hash][key_str_new]
                 if len(tmp_tHelpDocResult) > 1:
                     if tmp_tHelpDocResult[0] == '&' and tmp_tHelpDocResult[1:] != key_str_new:
-                        tmp_reply_str = getHelp(tmp_tHelpDocResult[1:], bot_hash)
-                        return tmp_reply_str
+                        return getHelp(tmp_tHelpDocResult[1:], bot_hash)
                 dictTValue['tHelpDocResult'] = OlivaDiceCore.helpDocData.dictHelpDoc[bot_hash][key_str_new]
                 if key_str_new == 'default':
                     bot_info_str = OlivaDiceCore.data.bot_info
@@ -144,7 +143,7 @@ def getHelp(key_str, bot_hash, plugin_event = None):
                     )
                 else:
                     tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strHelpDoc'], dictTValue)
-                for count_index in range(100):
+                for _ in range(100):
                     tmp_reply_str_old = tmp_reply_str
                     tmp_reply_str = formatSTRReplace(tmp_reply_str, OlivaDiceCore.helpDocData.dictHelpDoc[bot_hash])
                     tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(tmp_reply_str, dictTValue)
@@ -157,14 +156,12 @@ def getHelp(key_str, bot_hash, plugin_event = None):
                 if type(tmp_recommend_list) == list:
                     if len(tmp_recommend_list) > 0:
                         flag_is_begin = True
-                        tmp_count = 0
-                        for tmp_recommend_list_this in tmp_recommend_list:
+                        for tmp_count, tmp_recommend_list_this in enumerate(tmp_recommend_list):
                             if not flag_is_begin:
                                 tmp_recommend_str += '\n'
                             else:
                                 flag_is_begin = False
                             tmp_recommend_str += '%d. %s' % (tmp_count + 1,tmp_recommend_list_this)
-                            tmp_count += 1
                         if plugin_event != None:
                             tmp_recommend_str += '\n请输入序号以查看对应选项'
                         dictTValue['tHelpDocResult'] = tmp_recommend_str
@@ -172,35 +169,33 @@ def getHelp(key_str, bot_hash, plugin_event = None):
                         flag_need_loop = True
                     else:
                         tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strHelpDocNotFound'], dictTValue)
-                    if plugin_event == None:
+                    if plugin_event is None:
                         return tmp_reply_str
-                    else:
-                        if flag_need_loop:
-                            OlivaDiceCore.msgReply.replyMsg(plugin_event, tmp_reply_str)
-                            tmp_select:'str|None' = OlivaDiceCore.msgReplyModel.replyCONTEXT_regWait(
-                                plugin_event = plugin_event,
-                                flagBlock = 'allowCommand',
-                                hash = OlivaDiceCore.msgReplyModel.contextRegHash([None, plugin_event.data.user_id])
-                            )
-                            if type(tmp_select) == str and tmp_select.isdigit():
-                                tmp_select = int(tmp_select) - 1
-                                if tmp_select >= 0 and tmp_select < len(tmp_recommend_list):
-                                    key_str_new = tmp_recommend_list[tmp_select]
-                                else:
-                                    flag_need_loop = False
-                            elif tmp_select == None:
-                                return None
+                    if flag_need_loop:
+                        OlivaDiceCore.msgReply.replyMsg(plugin_event, tmp_reply_str)
+                        tmp_select:'str|None' = OlivaDiceCore.msgReplyModel.replyCONTEXT_regWait(
+                            plugin_event = plugin_event,
+                            flagBlock = 'allowCommand',
+                            hash = OlivaDiceCore.msgReplyModel.contextRegHash([None, plugin_event.data.user_id])
+                        )
+                        if type(tmp_select) == str and tmp_select.isdigit():
+                            tmp_select = int(tmp_select) - 1
+                            if tmp_select >= 0 and tmp_select < len(tmp_recommend_list):
+                                key_str_new = tmp_recommend_list[tmp_select]
                             else:
                                 flag_need_loop = False
-                        if not flag_need_loop:
-                            tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strHelpDocNotFound'], dictTValue)
-                            return tmp_reply_str
+                        elif tmp_select is None:
+                            return None
                         else:
-                            continue
-            if plugin_event == None:
+                            flag_need_loop = False
+                    if flag_need_loop:
+                        continue
+                    tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strHelpDocNotFound'], dictTValue)
+                    return tmp_reply_str
+            if plugin_event is None:
                 break
     tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strHelpDocNotFound'], dictTValue)
-    if plugin_event == None:
+    if plugin_event is None:
         return tmp_reply_str
 
 def getHelpRecommend(key_str:str, bot_hash:str):
@@ -211,18 +206,16 @@ def getHelpRecommend(key_str:str, bot_hash:str):
         'helpRecommendGate',
         bot_hash
     )
-    if helpRecommendGate == None:
+    if helpRecommendGate is None:
         helpRecommendGate = 25
 
     if bot_hash in OlivaDiceCore.helpDocData.dictHelpDoc:
-        for dictHelpDoc_this in OlivaDiceCore.helpDocData.dictHelpDoc[bot_hash]:
-            tmp_RecommendRank_list.append([
-                getRecommendRank(
-                    key_str,
-                    dictHelpDoc_this
-                ),
-                dictHelpDoc_this
-            ])
+        tmp_RecommendRank_list.extend(
+            [getRecommendRank(key_str, dictHelpDoc_this), dictHelpDoc_this]
+            for dictHelpDoc_this in OlivaDiceCore.helpDocData.dictHelpDoc[
+                bot_hash
+            ]
+        )
         tmp_RecommendRank_list.sort(key = lambda x : x[0])
     tmp_for_list = range(min(8, len(tmp_RecommendRank_list)))
     for tmp_for_list_this in tmp_for_list:
@@ -233,7 +226,6 @@ def getHelpRecommend(key_str:str, bot_hash:str):
 
 def getRecommendRank(word1_in:str, word2_in:str):
     iRank = 1
-    find_flag = 1
     word1 = word1_in.lower()
     word2 = word2_in.lower()
     if len(word1) > len(word2):
@@ -241,16 +233,12 @@ def getRecommendRank(word1_in:str, word2_in:str):
     word1_len = len(word1)
     word2_len = len(word2)
 
-    if word2.find(word1) != -1:
-        find_flag = 0
-
-    #LCS
-    dp1 = []
+    find_flag = 0 if word1 in word2 else 1
     dp1_first = [0]
-    for word1_this in word1:
+    for _ in word1:
         dp1_first.append(0)
-    dp1.append(dp1_first)
-    for word2_this in word2:
+    dp1 = [dp1_first]
+    for _ in word2:
         dp1.append([0] + [0] * word1_len)
     tmp_i_list = range(1, word1_len + 1)
     tmp_j_list = range(1, word2_len + 1)
@@ -265,15 +253,11 @@ def getRecommendRank(word1_in:str, word2_in:str):
     #minDistance
     dp2 = []
     dp2_first = [0]
-    tmp_counter = 1
-    for word1_this in word1:
+    for tmp_counter, _ in enumerate(word1, start=1):
         dp2_first.append(tmp_counter)
-        tmp_counter += 1
     dp2.append(dp2_first)
-    tmp_counter = 1
-    for word2_this in word2:
+    for tmp_counter, _ in enumerate(word2, start=1):
         dp2.append([tmp_counter] + [0] * word1_len)
-        tmp_counter += 1
     tmp_i_list = range(1, word1_len + 1)
     tmp_j_list = range(1, word2_len + 1)
     for i in tmp_i_list:
@@ -285,7 +269,7 @@ def getRecommendRank(word1_in:str, word2_in:str):
     iRank_2 = dp2[word2_len][word1_len]
 
     iRank = (find_flag) * (word2_len * (word1_len - iRank_1) + iRank_2 + 1);
-    iRank = int(int((iRank * iRank) / word1_len) / word2_len)
+    iRank = int(iRank**2 / word1_len) // word2_len
 
     if iRank >= word1_len * word2_len:
         iRank += 1000
@@ -341,5 +325,4 @@ def formatSTRReplace(data:str, valDict:dict):
                 flagType = 'str'
     if flagType == 'key':
         reg_res += '{%s' % reg_key
-    res = reg_res
-    return res
+    return reg_res

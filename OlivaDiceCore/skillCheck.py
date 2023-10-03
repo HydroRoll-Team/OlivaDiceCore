@@ -76,7 +76,7 @@ def getSkillCheckByTemplate(data, template = None, ruleKey = 'default'):
     tmp_template_dict = None
     tmp_template_rule_dict = None
     #处理人物卡模板规则
-    if template == None:
+    if template is None:
         tmp_template_dict = OlivaDiceCore.pcCardData.dictPcCardTemplateDefault['default'].copy()
     else:
         tmp_template_dict = template.copy()
@@ -105,7 +105,7 @@ def getSkillCheckByTemplate(data, template = None, ruleKey = 'default'):
 
 def culRule(nodeKey, nodeData, tempData):
     temp_result = False
-    if nodeData == None:
+    if nodeData is None:
         temp_result = False
     elif type(nodeData) == int:
         temp_result = nodeData
@@ -234,12 +234,12 @@ def getSpecialSkillReplace(srcPara:str, pcCardRule:str, pcCardData:dict):
             res_this = getSpecialSkill(skill_this, pcCardRule, pcCardData)
             if type(res_this) is str:
                 res = res.replace('{%s}' % skill_this, skill_this)
-                res = res.replace('%s' % skill_this, res_this)
+                res = res.replace(f'{skill_this}', res_this)
     return res
 
 def getSpecialSkill(skillName:str, pcCardRule:str, pcCardData:dict):
     res = None
-    if pcCardRule in ['default', 'COC7']:
+    if pcCardRule in {'default', 'COC7'}:
         if skillName == '体格':
             if type(pcCardData) is dict \
             and 'STR' in pcCardData \
@@ -284,5 +284,4 @@ def getSpecialSkill(skillName:str, pcCardRule:str, pcCardData:dict):
                     res = None
             else:
                 res = -2
-    res = res if res == None else str(res)
-    return res
+    return res if res is None else str(res)

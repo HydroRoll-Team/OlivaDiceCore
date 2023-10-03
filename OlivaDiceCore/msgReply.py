@@ -72,7 +72,9 @@ def unity_init(plugin_event, Proc):
     ])
     OlivaDiceCore.censorAPI.initCensor(Proc.Proc_data['bot_info_dict'])
     #显示Master认主信息
-    dictTValue['tInitMasterKey'] = '.master %s' % OlivaDiceCore.data.bot_content['masterKey']
+    dictTValue[
+        'tInitMasterKey'
+    ] = f".master {OlivaDiceCore.data.bot_content['masterKey']}"
     tmp_log_str =  OlivaDiceCore.msgCustomManager.formatReplySTRConst(dictStrConst['strToBeMaster'], dictTValue)
     logProc(Proc, 2, tmp_log_str, [
         ('OlivaDice', 'default'),
@@ -136,7 +138,7 @@ def poke_reply(plugin_event, Proc):
                 new_plugin_event,
                 OlivaDiceCore.crossHook.dictHookFunc['pokeHook'](plugin_event = new_plugin_event, type = 'group')
             )
-        elif plugin_event.data.group_id in [-1, None, '-1']:
+        else:
             new_plugin_event = OlivaDiceCore.msgEvent.getReRxEvent_private_message(
                 src = plugin_event,
                 message = '[戳一戳]'

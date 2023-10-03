@@ -56,13 +56,13 @@ def dataPcCardTemplateDefaultInit():
     )
 
     dataDirRoot_this = OlivaDiceCore.data.dataDirRoot
-    releaseDir(dataDirRoot_this + '/unity')
-    releaseDir(dataDirRoot_this + '/unity/extend')
-    releaseDir(dataDirRoot_this + '/unity/extend/template')
-    dataDir = dataDirRoot_this + '/unity/extend/template'
+    releaseDir(f'{dataDirRoot_this}/unity')
+    releaseDir(f'{dataDirRoot_this}/unity/extend')
+    releaseDir(f'{dataDirRoot_this}/unity/extend/template')
+    dataDir = f'{dataDirRoot_this}/unity/extend/template'
     dataPathList = os.listdir(dataDir)
     for dataName in dataPathList:
-        dataPath = dataDir + '/' + dataName
+        dataPath = f'{dataDir}/{dataName}'
         try:
             with open(dataPath, 'r', encoding = 'utf-8') as data_f:
                 tmp_dictPcCardTemplatePatch = json.loads(data_f.read())
@@ -72,14 +72,7 @@ def dataPcCardTemplateDefaultInit():
                             OlivaDiceCore.pcCardData.dictPcCardTemplateModel
                         )
                     for templateModelName in tmp_dictPcCardTemplatePatch[templateName]:
-                        if templateModelName not in OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[templateName]:
-                            OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[templateName][templateModelName] = tmp_dictPcCardTemplatePatch[templateName][templateModelName]
-                        else:
-                            if False:
-                                # 此处等待后续实现特异化的补丁逻辑
-                                pass
-                            else:
-                                OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[templateName][templateModelName] = tmp_dictPcCardTemplatePatch[templateName][templateModelName]
+                        OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[templateName][templateModelName] = tmp_dictPcCardTemplatePatch[templateName][templateModelName]
         except Exception as e:
             traceback.print_exc()
             dictTValue['tName'] = '全局'
@@ -96,7 +89,7 @@ def dataPcCardTemplateDefaultInit():
 def dataPcCardTotalCount():
     total_count = 0
     for dictPcCardData_this in dictPcCardData:
-        for dictPcCardData_hostkey_this in dictPcCardData[dictPcCardData_this]:
+        for _ in dictPcCardData[dictPcCardData_this]:
             total_count += 1
     return total_count
 
@@ -108,26 +101,26 @@ def dataPcCardSave(hostKey, pcHash):
     releaseDir(dataDirRoot_this)
     if hostKey in dictPcCardData:
         if pcHash in dictPcCardData[hostKey]:
-            releaseDir(dataDirRoot_this + '/' + hostKey)
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard')
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/data')
-            pcCardDataPath = dataDirRoot_this + '/' + hostKey + '/pcCard/data/' + pcHash
+            releaseDir(f'{dataDirRoot_this}/{hostKey}')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/data')
+            pcCardDataPath = f'{dataDirRoot_this}/{hostKey}/pcCard/data/{pcHash}'
             with open(pcCardDataPath, 'w', encoding = 'utf-8') as pcCardDataPath_f:
                 pcCardDataPath_f.write(json.dumps(dictPcCardData[hostKey][pcHash], ensure_ascii = False, indent = 4))
     if hostKey in dictPcCardSelection:
         if pcHash in dictPcCardSelection[hostKey]:
-            releaseDir(dataDirRoot_this + '/' + hostKey)
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard')
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/selection')
-            pcCardSelectionPath = dataDirRoot_this + '/' + hostKey + '/pcCard/selection/' + pcHash
+            releaseDir(f'{dataDirRoot_this}/{hostKey}')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/selection')
+            pcCardSelectionPath = f'{dataDirRoot_this}/{hostKey}/pcCard/selection/{pcHash}'
             with open(pcCardSelectionPath, 'w', encoding = 'utf-8') as pcCardSelectionPath_f:
                 pcCardSelectionPath_f.write(json.dumps(dictPcCardSelection[hostKey][pcHash], ensure_ascii = False, indent = 4))
     if hostKey in dictPcCardTemplate:
         if pcHash in dictPcCardTemplate[hostKey]:
-            releaseDir(dataDirRoot_this + '/' + hostKey)
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard')
-            releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/template')
-            pcCardTemplatePath = dataDirRoot_this + '/' + hostKey + '/pcCard/template/' + pcHash
+            releaseDir(f'{dataDirRoot_this}/{hostKey}')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard')
+            releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/template')
+            pcCardTemplatePath = f'{dataDirRoot_this}/{hostKey}/pcCard/template/{pcHash}'
             with open(pcCardTemplatePath, 'w', encoding = 'utf-8') as dictPcCardTemplate_f:
                 dictPcCardTemplate_f.write(json.dumps(dictPcCardTemplate[hostKey][pcHash], ensure_ascii = False, indent = 4))
 
@@ -137,14 +130,14 @@ def dataPcCardLoad(hostKey, pcHash):
     global dictPcCardTemplate
     dataDirRoot_this = OlivaDiceCore.data.dataDirRoot
     releaseDir(dataDirRoot_this)
-    releaseDir(dataDirRoot_this + '/' + hostKey)
-    releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard')
-    releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/data')
-    releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/selection')
-    releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/template')
-    pcCardDataPath = dataDirRoot_this + '/' + hostKey + '/pcCard/data/' + pcHash
-    pcCardSelectionPath = dataDirRoot_this + '/' + hostKey + '/pcCard/selection/' + pcHash
-    pcCardTemplatePath = dataDirRoot_this + '/' + hostKey + '/pcCard/template/' + pcHash
+    releaseDir(f'{dataDirRoot_this}/{hostKey}')
+    releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard')
+    releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/data')
+    releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/selection')
+    releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/template')
+    pcCardDataPath = f'{dataDirRoot_this}/{hostKey}/pcCard/data/{pcHash}'
+    pcCardSelectionPath = f'{dataDirRoot_this}/{hostKey}/pcCard/selection/{pcHash}'
+    pcCardTemplatePath = f'{dataDirRoot_this}/{hostKey}/pcCard/template/{pcHash}'
     if hostKey not in dictPcCardData:
         dictPcCardData[hostKey] = {}
     if pcHash not in dictPcCardData[hostKey]:
@@ -173,9 +166,9 @@ def dataPcCardLoadAll():
     pcCardDataHostList = os.listdir(dataDirRoot_this)
     for pcCardDataHostList_this in pcCardDataHostList:
         hostKey = pcCardDataHostList_this
-        releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard')
-        releaseDir(dataDirRoot_this + '/' + hostKey + '/pcCard/data')
-        pcCardDataPCHashList = os.listdir(dataDirRoot_this + '/' + hostKey + '/pcCard/data')
+        releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard')
+        releaseDir(f'{dataDirRoot_this}/{hostKey}/pcCard/data')
+        pcCardDataPCHashList = os.listdir(f'{dataDirRoot_this}/{hostKey}/pcCard/data')
         for pcCardDataPCHashList_this in pcCardDataPCHashList:
             pcHash = pcCardDataPCHashList_this
             dataPcCardLoad(hostKey, pcHash)
@@ -201,30 +194,30 @@ def pcCardRebase(pcHash, pcCardName, hagId = None):
     if pcHash not in dictPcCardSelection['unity']:
         dictPcCardSelection['unity'][pcHash] = {}
     pcCardNameOld = pcCardDataGetSelectionKey(pcHash, hagId)
-    if None == pcCardDataGetSelectionKeyLock(pcHash, hagId):
+    if pcCardDataGetSelectionKeyLock(pcHash, hagId) is None:
         pcCardDataSetSelectionKey(pcHash, pcCardName, forceSwitch = True)
     if lockList_key in dictPcCardSelection['unity'][pcHash]:
         for hagId_this in dictPcCardSelection['unity'][pcHash][lockList_key]:
             if pcCardNameOld == dictPcCardSelection['unity'][pcHash][lockList_key][hagId_this]:
                 dictPcCardSelection['unity'][pcHash][lockList_key][hagId_this] = pcCardName
-    if pcCardNameOld != None:
-        if pcHash in dictPcCardData['unity']:
-            if pcCardNameOld in dictPcCardData['unity'][pcHash]:
-                dict_pcCardNameOld = dictPcCardData['unity'][pcHash][pcCardNameOld].copy()
-                dictPcCardData['unity'][pcHash].pop(pcCardNameOld)
-        else:
-            dictPcCardData['unity'][pcHash] = {}
-    else:
+    if (
+        pcCardNameOld != None
+        and pcHash in dictPcCardData['unity']
+        and pcCardNameOld in dictPcCardData['unity'][pcHash]
+    ):
+        dict_pcCardNameOld = dictPcCardData['unity'][pcHash][pcCardNameOld].copy()
+        dictPcCardData['unity'][pcHash].pop(pcCardNameOld)
+    elif pcCardNameOld is None or pcHash not in dictPcCardData['unity']:
         dictPcCardData['unity'][pcHash] = {}
     dictPcCardData['unity'][pcHash][pcCardName] = dict_pcCardNameOld
-    if pcCardNameOld != None:
-        if pcHash in dictPcCardTemplate['unity']:
-            if pcCardNameOld in dictPcCardTemplate['unity'][pcHash]:
-                dict_pcCardTemplateOld = dictPcCardTemplate['unity'][pcHash][pcCardNameOld].copy()
-                dictPcCardTemplate['unity'][pcHash].pop(pcCardNameOld)
-        else:
-            dictPcCardTemplate['unity'][pcHash] = {}
-    else:
+    if (
+        pcCardNameOld != None
+        and pcHash in dictPcCardTemplate['unity']
+        and pcCardNameOld in dictPcCardTemplate['unity'][pcHash]
+    ):
+        dict_pcCardTemplateOld = dictPcCardTemplate['unity'][pcHash][pcCardNameOld].copy()
+        dictPcCardTemplate['unity'][pcHash].pop(pcCardNameOld)
+    elif pcCardNameOld is None or pcHash not in dictPcCardTemplate['unity']:
         dictPcCardTemplate['unity'][pcHash] = {}
     dictPcCardTemplate['unity'][pcHash][pcCardName] = dict_pcCardTemplateOld
     dataPcCardSave('unity', pcHash)
@@ -234,10 +227,13 @@ def pcCardDataSkillNameMapper(pcHash, skillName, flagShow = False, hagId = None)
     pcCardName = pcCardDataGetSelectionKey(pcHash, hagId)
     pcCardSynonyms_hit = str(skillName)
     res = str(skillName)
-    pcCardTemplateName = 'default'
+    if pcCardName is None:
+        pcCardTemplateName = 'default'
+    else:
+        pcCardTemplateName = pcCardDataGetTemplateDataByKey(
+            pcHash, pcCardName, 'template', 'default'
+        )
     tmp_pcCardSynonyms = {}
-    if pcCardName != None:
-        pcCardTemplateName = pcCardDataGetTemplateDataByKey(pcHash, pcCardName, 'template', 'default')
     if 'synonyms' in OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[pcCardTemplateName]:
         tmp_pcCardSynonyms = OlivaDiceCore.pcCardData.dictPcCardTemplateDefault[pcCardTemplateName]['synonyms']
     for tmp_pcCardSynonyms_this in tmp_pcCardSynonyms:
@@ -255,14 +251,12 @@ def pcCardDataSetBySkillName(pcHash, skillName, skillValue, pcCardName = 'defaul
     if skillName == '':
         return
     tmp_hitList = hitList
-    if tmp_hitList == None:
+    if tmp_hitList is None:
         tmp_hitList = []
     tmp_pc_card_name_key = pcCardName
     if pcCardName != pcCardDataGetSelectionKeyLock(pcHash, hagId):
         pcCardDataSetSelectionKey(pcHash, tmp_pc_card_name_key, forceSwitch = True)
-    if pcHash in dictPcCardData['unity']:
-        pass
-    else:
+    if pcHash not in dictPcCardData['unity']:
         dictPcCardData['unity'][pcHash] = {}
     if tmp_pc_card_name_key not in dictPcCardData['unity'][pcHash]:
         dictPcCardData['unity'][pcHash][tmp_pc_card_name_key] = {}
@@ -306,7 +300,7 @@ def pcCardDataSetBySkillName(pcHash, skillName, skillValue, pcCardName = 'defaul
                         valueTable = dictPcCardData['unity'][pcHash][tmp_pc_card_name_key]
                     )
                     tmp_skill_rd.roll()
-                    if tmp_skill_rd.resError == None:
+                    if tmp_skill_rd.resError is None:
                         pcCardDataSetBySkillName(
                             pcHash,
                             tmp_pc_card_mapping_hit_this,
@@ -316,14 +310,12 @@ def pcCardDataSetBySkillName(pcHash, skillName, skillValue, pcCardName = 'defaul
                             forceMapping = forceMapping,
                             hagId = hagId
                         )
-    if hitList == None:
+    if hitList is None:
         dataPcCardSave('unity', pcHash)
 
 def pcCardDataDelBySkillName(pcHash, skillName, pcCardName = 'default'):
     tmp_pc_card_name_key = pcCardName
-    if pcHash in dictPcCardData['unity']:
-        pass
-    else:
+    if pcHash not in dictPcCardData['unity']:
         dictPcCardData['unity'][pcHash] = {}
     if tmp_pc_card_name_key not in dictPcCardData['unity'][pcHash]:
         dictPcCardData['unity'][pcHash][tmp_pc_card_name_key] = {}
@@ -353,7 +345,7 @@ def pcCardDataGetBySkillName(pcHash, skillName, hagId = None):
         return tmp_skill_value
     tmp_template_name = pcCardDataGetTemplateKey(pcHash, tmp_pc_card_name_key)
     tmp_template_defaultSkillValue = None
-    if tmp_template_name == None:
+    if tmp_template_name is None:
         tmp_template_name = 'default'
     if tmp_template_name != None:
         tmp_template = pcCardDataGetTemplateByKey(tmp_template_name)
@@ -396,23 +388,19 @@ def pcCardDataGetSelectionKey(pcHash, hagId = None):
     return tmp_pc_card_name_key
 
 def pcCardDataSetSelectionKey(pcHash, pcCardName, forceSwitch = False):
-    selection_key = 'selection'
     tmp_pc_card_name_key = pcCardName
     tmp_card_dict = {}
     if pcHash in dictPcCardData['unity']:
         tmp_card_dict = dictPcCardData['unity'][pcHash]
-    if forceSwitch or tmp_pc_card_name_key in tmp_card_dict:
-        if pcHash not in dictPcCardSelection['unity']:
-            dictPcCardSelection['unity'][pcHash] = {}
-        dictPcCardSelection['unity'][pcHash][selection_key] = tmp_pc_card_name_key
-        dataPcCardSave('unity', pcHash)
-        return True
-    else:
+    if not forceSwitch and tmp_pc_card_name_key not in tmp_card_dict:
         return False
+    if pcHash not in dictPcCardSelection['unity']:
+        dictPcCardSelection['unity'][pcHash] = {}
+    dictPcCardSelection['unity'][pcHash]['selection'] = tmp_pc_card_name_key
+    dataPcCardSave('unity', pcHash)
+    return True
 
 def pcCardDataDelSelectionKey(pcHash, pcCardName, skipDel = False):
-    selection_key = 'selection'
-    lockList_key = 'lockList'
     tmp_pc_card_name_key = pcCardName
     tmp_card_dict = {}
     tmp_card_dict_2 = {}
@@ -424,61 +412,69 @@ def pcCardDataDelSelectionKey(pcHash, pcCardName, skipDel = False):
         tmp_card_dict_2 = dictPcCardTemplate['unity'][pcHash]
     else:
         dictPcCardTemplate['unity'][pcHash] = {}
-    if tmp_pc_card_name_key in tmp_card_dict:
-        dictPcCardData['unity'][pcHash].pop(tmp_pc_card_name_key)
-        if tmp_pc_card_name_key in tmp_card_dict_2:
-            dictPcCardTemplate['unity'][pcHash].pop(tmp_pc_card_name_key)
-        if pcHash not in dictPcCardSelection['unity']:
-            dictPcCardSelection['unity'][pcHash] = {}
-            return False
-        if not skipDel:
-            if selection_key in dictPcCardSelection['unity'][pcHash]:
-                if tmp_pc_card_name_key == dictPcCardSelection['unity'][pcHash][selection_key]:
-                    dictPcCardSelection['unity'][pcHash].pop(selection_key)
-                    if len(dictPcCardData['unity'][pcHash].keys()) > 0:
-                        tmp_card_dict_keys = list(dictPcCardData['unity'][pcHash].keys())
-                        dictPcCardSelection['unity'][pcHash][selection_key] = tmp_card_dict_keys[0]
-        if not skipDel:
-            lockList_dict_new = {}
-            if lockList_key in dictPcCardSelection['unity'][pcHash]:
-                for hagId_this in dictPcCardSelection['unity'][pcHash][lockList_key]:
-                    if pcCardName != dictPcCardSelection['unity'][pcHash][lockList_key][hagId_this]:
-                        lockList_dict_new[hagId_this] = dictPcCardSelection['unity'][pcHash][lockList_key][hagId_this]
-                dictPcCardSelection['unity'][pcHash][lockList_key] = lockList_dict_new
-        dataPcCardSave('unity', pcHash)
-        return True
-    else:
+    if tmp_pc_card_name_key not in tmp_card_dict:
         return False
+    dictPcCardData['unity'][pcHash].pop(tmp_pc_card_name_key)
+    if tmp_pc_card_name_key in tmp_card_dict_2:
+        dictPcCardTemplate['unity'][pcHash].pop(tmp_pc_card_name_key)
+    if pcHash not in dictPcCardSelection['unity']:
+        dictPcCardSelection['unity'][pcHash] = {}
+        return False
+    if not skipDel:
+        selection_key = 'selection'
+        if selection_key in dictPcCardSelection['unity'][pcHash]:
+            if tmp_pc_card_name_key == dictPcCardSelection['unity'][pcHash][selection_key]:
+                dictPcCardSelection['unity'][pcHash].pop(selection_key)
+                if len(dictPcCardData['unity'][pcHash].keys()) > 0:
+                    tmp_card_dict_keys = list(dictPcCardData['unity'][pcHash].keys())
+                    dictPcCardSelection['unity'][pcHash][selection_key] = tmp_card_dict_keys[0]
+    if not skipDel:
+        lockList_key = 'lockList'
+        if lockList_key in dictPcCardSelection['unity'][pcHash]:
+            lockList_dict_new = {
+                hagId_this: dictPcCardSelection['unity'][pcHash][lockList_key][
+                    hagId_this
+                ]
+                for hagId_this in dictPcCardSelection['unity'][pcHash][
+                    lockList_key
+                ]
+                if pcCardName
+                != dictPcCardSelection['unity'][pcHash][lockList_key][
+                    hagId_this
+                ]
+            }
+            dictPcCardSelection['unity'][pcHash][lockList_key] = lockList_dict_new
+    dataPcCardSave('unity', pcHash)
+    return True
 
 def pcCardDataSetSelectionKeyLock(pcHash, pcCardName, hagID):
-    lockList_key = 'lockList'
     tmp_pc_card_name_key = pcCardName
     tmp_card_dict = {}
     if pcHash in dictPcCardData['unity']:
         tmp_card_dict = dictPcCardData['unity'][pcHash]
-    if tmp_pc_card_name_key in tmp_card_dict:
-        if pcHash not in dictPcCardSelection['unity']:
-            dictPcCardSelection['unity'][pcHash] = {}
-        if lockList_key not in dictPcCardSelection['unity'][pcHash]:
-            dictPcCardSelection['unity'][pcHash][lockList_key] = {}
-        dictPcCardSelection['unity'][pcHash][lockList_key][hagID] = tmp_pc_card_name_key
-        dataPcCardSave('unity', pcHash)
-        return True
-    else:
+    if tmp_pc_card_name_key not in tmp_card_dict:
         return False
+    if pcHash not in dictPcCardSelection['unity']:
+        dictPcCardSelection['unity'][pcHash] = {}
+    lockList_key = 'lockList'
+    if lockList_key not in dictPcCardSelection['unity'][pcHash]:
+        dictPcCardSelection['unity'][pcHash][lockList_key] = {}
+    dictPcCardSelection['unity'][pcHash][lockList_key][hagID] = tmp_pc_card_name_key
+    dataPcCardSave('unity', pcHash)
+    return True
 
 def pcCardDataGetSelectionKeyLock(pcHash, hagID):
-    lockList_key = 'lockList'
     tmp_pc_card_name_key = None
     if pcHash in dictPcCardSelection['unity']:
+        lockList_key = 'lockList'
         if lockList_key in dictPcCardSelection['unity'][pcHash]:
             if hagID in dictPcCardSelection['unity'][pcHash][lockList_key]:
                 tmp_pc_card_name_key = dictPcCardSelection['unity'][pcHash][lockList_key][hagID]
     return tmp_pc_card_name_key
 
 def pcCardDataDelSelectionKeyLock(pcHash, hagID):
-    lockList_key = 'lockList'
     if pcHash in dictPcCardSelection['unity']:
+        lockList_key = 'lockList'
         if lockList_key in dictPcCardSelection['unity'][pcHash]:
             if hagID in dictPcCardSelection['unity'][pcHash][lockList_key]:
                 dictPcCardSelection['unity'][pcHash][lockList_key].pop(hagID)
@@ -486,10 +482,11 @@ def pcCardDataDelSelectionKeyLock(pcHash, hagID):
 
 def pcCardDataGetTemplateByKey(templateName):
     global dictPcCardTemplateDefault
-    tmp_template = None
-    if templateName in dictPcCardTemplateDefault['unity']:
-        tmp_template = dictPcCardTemplateDefault['unity'][templateName]
-    return tmp_template
+    return (
+        dictPcCardTemplateDefault['unity'][templateName]
+        if templateName in dictPcCardTemplateDefault['unity']
+        else None
+    )
 
 def pcCardDataGetTemplateKey(pcHash, pcCardName):
     global dictPcCardTemplate
@@ -520,7 +517,6 @@ def pcCardDataGetTemplateRuleKey(pcHash, pcCardName):
     return tmp_pc_template_name_key
 
 def pcCardDataSetTemplateKey(pcHash, pcCardName, templateName = 'default', ruleName = 'default'):
-    selection_key = 'template'
     selection_key_2 = 'checkRules'
     tmp_pc_card_name_key = pcCardName
     templateName_core = None
@@ -529,7 +525,7 @@ def pcCardDataSetTemplateKey(pcHash, pcCardName, templateName = 'default', ruleN
         data = dictPcCardTemplateDefault['unity'],
         key = templateName
     )
-    if templateName_core == None:
+    if templateName_core is None:
         return False
     if selection_key_2 not in dictPcCardTemplateDefault['unity'][templateName_core]:
         return False
@@ -537,7 +533,7 @@ def pcCardDataSetTemplateKey(pcHash, pcCardName, templateName = 'default', ruleN
         data = dictPcCardTemplateDefault['unity'][templateName_core][selection_key_2],
         key = ruleName
     )
-    if ruleName_core == None:
+    if ruleName_core is None:
         return False
     tmp_card_dict = {}
     if pcHash in dictPcCardData['unity']:
@@ -547,6 +543,7 @@ def pcCardDataSetTemplateKey(pcHash, pcCardName, templateName = 'default', ruleN
             dictPcCardTemplate['unity'][pcHash] = {}
         if tmp_pc_card_name_key not in dictPcCardTemplate['unity'][pcHash]:
             dictPcCardTemplate['unity'][pcHash][tmp_pc_card_name_key] = {}
+        selection_key = 'template'
         dictPcCardTemplate['unity'][pcHash][tmp_pc_card_name_key][selection_key] = templateName_core
         dictPcCardTemplate['unity'][pcHash][tmp_pc_card_name_key][selection_key_2] = ruleName_core
         dataPcCardSave('unity', pcHash)
@@ -558,9 +555,7 @@ def pcCardDataCheckTemplateKey(templateName = 'default', ruleName = 'default', r
     res = None
     if resMode == 'flag':
         res = False
-    elif resMode == 'temp':
-        res = None
-    elif resMode == 'rule':
+    elif resMode in ['temp', 'rule']:
         res = None
     selection_key = 'template'
     selection_key_2 = 'checkRules'
@@ -568,7 +563,7 @@ def pcCardDataCheckTemplateKey(templateName = 'default', ruleName = 'default', r
         data = dictPcCardTemplateDefault['unity'],
         key = templateName
     )
-    if templateName_core == None:
+    if templateName_core is None:
         return res
     if templateName_core not in dictPcCardTemplateDefault['unity']:
         return res
@@ -578,7 +573,7 @@ def pcCardDataCheckTemplateKey(templateName = 'default', ruleName = 'default', r
         data = dictPcCardTemplateDefault['unity'][templateName_core][selection_key_2],
         key = ruleName
     )
-    if ruleName_core == None:
+    if ruleName_core is None:
         return res
     res = True
     if resMode == 'flag':
@@ -624,10 +619,11 @@ def pcCardDataSetTemplateDataByKey(pcHash, pcCardName, dataKey, dataContent):
 
 
 def pcCardDataGetUserAll(pcHash):
-    tmp_card_dict = {}
-    if pcHash in dictPcCardData['unity']:
-        tmp_card_dict = dictPcCardData['unity'][pcHash]
-    return tmp_card_dict
+    return (
+        dictPcCardData['unity'][pcHash]
+        if pcHash in dictPcCardData['unity']
+        else {}
+    )
 
 # 获取某用户当前人物卡技能表
 def pcCardDataGetByPcName(pcHash, hagId = None):
@@ -643,7 +639,7 @@ def pcCardDataGetByPcName(pcHash, hagId = None):
             tmp_skill_list = dictPcCardData['unity'][pcHash][tmp_pc_card_name_key]
     tmp_template_name = pcCardDataGetTemplateKey(pcHash, tmp_pc_card_name_key)
     tmp_template_defaultSkillValue = None
-    if tmp_template_name == None:
+    if tmp_template_name is None:
         tmp_template_name = 'default'
     if tmp_template_name != None:
         tmp_template = pcCardDataGetTemplateByKey(tmp_template_name)
@@ -692,41 +688,40 @@ def getPcHash(pcId, platform):
     return hash_tmp.hexdigest()
 
 def getKeyWithUpper(data, key):
-    res = None
-    for key_this in data:
-        if key.upper() == key_this.upper():
-            res = key_this
-            break
-    return res
+    return next(
+        (key_this for key_this in data if key.upper() == key_this.upper()),
+        None,
+    )
 
 # 外部调用接口
 
 def getPcSkillAPI(pcHash, skillName, hagId, defaultName = '人物卡'):
-    res = None
-    if getPcNameAPI(pcHash, hagId, defaultName) != None:
-        res = pcCardDataGetBySkillName(pcHash, skillName, hagId)
-    return res
+    return (
+        pcCardDataGetBySkillName(pcHash, skillName, hagId)
+        if getPcNameAPI(pcHash, hagId, defaultName) != None
+        else None
+    )
 
 def setPcSkillAPI(pcHash, skillName, skillValue, hagId, defaultName = '人物卡'):
-    res = False
     tmp_pcCardNameKey = getPcNameAPI(pcHash, hagId, defaultName)
-    if tmp_pcCardNameKey != None:
-        res = pcCardDataSetBySkillName(
-            pcHash = pcHash,
-            skillName = skillName,
-            skillValue = skillValue,
-            pcCardName = tmp_pcCardNameKey,
-            hitList = None,
-            forceMapping = False,
-            hagId = hagId
+    return (
+        pcCardDataSetBySkillName(
+            pcHash=pcHash,
+            skillName=skillName,
+            skillValue=skillValue,
+            pcCardName=tmp_pcCardNameKey,
+            hitList=None,
+            forceMapping=False,
+            hagId=hagId,
         )
-    return res
+        if tmp_pcCardNameKey != None
+        else False
+    )
 
 ## 保证至少有一个目标人物卡
 def getPcNameAPI(pcHash, hagId, defaultName = '人物卡'):
-    res = None
     tmp_pcCardNameKey = pcCardDataGetSelectionKey(pcHash, hagId)
-    if tmp_pcCardNameKey == None:
+    if tmp_pcCardNameKey is None:
         tmp_pcCardNameKey = defaultName
         tmp_pcCardNameKey = OlivaDiceCore.pcCard.fixName(tmp_pcCardNameKey)
         if not OlivaDiceCore.pcCard.checkPcName(tmp_pcCardNameKey):
@@ -736,9 +731,8 @@ def getPcNameAPI(pcHash, hagId, defaultName = '人物卡'):
             tmp_pcCardNameKey,
             hagId
         ):
-            return res
-    res = tmp_pcCardNameKey
-    return res
+            return None
+    return tmp_pcCardNameKey
 
 ## 保证指定的目标人物卡一定存在
 def getPcNameForceAPI(pcHash, hagId, pcName = '人物卡'):
@@ -761,16 +755,15 @@ def getPcNameForceAPI(pcHash, hagId, pcName = '人物卡'):
             '__new',
             tmp_pcCardNameKey
         )
-    res = tmp_pcCardNameKey
-    return res
+    return tmp_pcCardNameKey
 
 def setPcSwitchAPI(pcHash, hagId, switchName = '人物卡'):
     res = False
     if getPcNameForceAPI(pcHash, hagId, switchName) != None:
-        if OlivaDiceCore.pcCard.pcCardDataGetSelectionKeyLock(
-            pcHash,
-            hagId
-        ) == None:
+        if (
+            OlivaDiceCore.pcCard.pcCardDataGetSelectionKeyLock(pcHash, hagId)
+            is None
+        ):
             res = OlivaDiceCore.pcCard.pcCardDataSetSelectionKey(
                 pcHash,
                 switchName
@@ -788,21 +781,20 @@ def setPcLockAPI(pcHash, hagId, setFlag:bool, pcName = '人物卡'):
     res = False
     tmp_pcName = getPcNameAPI(pcHash, hagId, pcName)
     if tmp_pcName != None:
-        if OlivaDiceCore.pcCard.pcCardDataGetSelectionKeyLock(
-            pcHash,
-            hagId
-        ) == None:
-            if setFlag == True:
+        if (
+            OlivaDiceCore.pcCard.pcCardDataGetSelectionKeyLock(pcHash, hagId)
+            is None
+        ):
+            if setFlag:
                 OlivaDiceCore.pcCard.pcCardDataSetSelectionKeyLock(
                     pcHash,
                     tmp_pcName,
                     hagId
                 )
-        else:
-            if setFlag == False:
-                OlivaDiceCore.pcCard.pcCardDataDelSelectionKeyLock(
-                    pcHash,
-                    hagId
-                )
+        elif not setFlag:
+            OlivaDiceCore.pcCard.pcCardDataDelSelectionKeyLock(
+                pcHash,
+                hagId
+            )
         res = True
     return res

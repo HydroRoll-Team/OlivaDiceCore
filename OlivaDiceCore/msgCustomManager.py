@@ -27,13 +27,13 @@ def initMsgCustom(bot_info_dict):
         OlivaDiceCore.msgCustom.dictStrCustomDict[bot_info_dict_this] = OlivaDiceCore.msgCustom.dictStrCustom.copy()
     releaseDir(OlivaDiceCore.data.dataDirRoot)
     botHash_list = os.listdir(OlivaDiceCore.data.dataDirRoot)
+    customReplyFile = 'customReply.json'
     for botHash_list_this in botHash_list:
         botHash = botHash_list_this
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
-        customReplyDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
-        customReplyFile = 'customReply.json'
-        customReplyPath = customReplyDir + '/' + customReplyFile
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
+        customReplyDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
+        customReplyPath = f'{customReplyDir}/{customReplyFile}'
         try:
             with open(customReplyPath, 'r', encoding = 'utf-8') as customReplyPath_f:
                 OlivaDiceCore.msgCustom.dictStrCustomUpdateDict[botHash] = json.loads(customReplyPath_f.read())
@@ -48,11 +48,11 @@ def saveMsgCustom(bot_info_dict):
         saveMsgCustomByBotHash(botHash)
 
 def saveMsgCustomByBotHash(botHash):
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
-    customReplyDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
+    customReplyDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
     customReplyFile = 'customReply.json'
-    customReplyPath = customReplyDir + '/' + customReplyFile
+    customReplyPath = f'{customReplyDir}/{customReplyFile}'
     if botHash not in OlivaDiceCore.msgCustom.dictStrCustomUpdateDict:
         OlivaDiceCore.msgCustom.dictStrCustomUpdateDict[botHash] = {}
     if type(OlivaDiceCore.msgCustom.dictStrCustomUpdateDict[botHash]) != dict:
@@ -77,8 +77,7 @@ def formatReplySTR(data:str, valDict:dict, flagCross:bool = True, flagSplit:bool
 
 def formatReplySTRConst(data:str, valDict:dict):
     res = data
-    res = res.format(**valDict)
-    return res
+    return res.format(**valDict)
 
 # 用状态机实现高宽容度的变量引用
 # 替代Python内置Format
@@ -142,8 +141,7 @@ def formatReplySTRReplace(data:str, valDict:dict, flagPure:bool = False):
                 flagType = 'str'
     if flagType == 'key':
         reg_res += '{%s' % reg_key
-    res = reg_res
-    return res
+    return reg_res
 
 def dictTValueInit(plugin_event, dictTValue):
     res = dictTValue
