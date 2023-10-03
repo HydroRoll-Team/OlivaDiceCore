@@ -45,9 +45,14 @@ def replyCONTEXT_regGet(plugin_event:OlivOS.API.Event, tmp_reast_str:str):
         'block' in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]
     ):
         if (
-            'res' in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]
-        ) and (
-            OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['res'] == None
+            'res'
+            in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][
+                tmp_hash
+            ]
+            and OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][
+                tmp_hash
+            ]['res']
+            is None
         ):
             tmp_data_block = OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['block']
             if type(tmp_data_block) == bool:
@@ -81,16 +86,13 @@ def contextRegHash(data:list):
     for data_this in data:
         if type(data_this) == str:
             hash_tmp.update(str(data_this).encode(encoding='UTF-8'))
-    res = hash_tmp.hexdigest()
-    return res
+    return hash_tmp.hexdigest()
 
 def replyCONTEXT_regWait(plugin_event:OlivOS.API.Event, flagBlock = True, hash:'str|None' = None):
     res = None
-    tmp_hash = None
     tmp_bothash = plugin_event.bot_info.hash
     tmp_block = flagBlock
-    if hash != None:
-        tmp_hash = hash
+    tmp_hash = hash if hash != None else None
     if tmp_bothash not in OlivaDiceCore.crossHook.dictReplyContextReg:
         OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash] = {}
     OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash] = {
@@ -103,11 +105,14 @@ def replyCONTEXT_regWait(plugin_event:OlivOS.API.Event, flagBlock = True, hash:'
     while count > 0:
         count -= 1
         time.sleep(feq)
-        if tmp_bothash in OlivaDiceCore.crossHook.dictReplyContextReg and tmp_hash in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash]:
-            if 'res' in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash] and OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['res'] != None:
-                res = OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['res']
-                break
-        else:
+        if (
+            tmp_bothash not in OlivaDiceCore.crossHook.dictReplyContextReg
+            or tmp_hash
+            not in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash]
+        ):
+            break
+        if 'res' in OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash] and OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['res'] != None:
+            res = OlivaDiceCore.crossHook.dictReplyContextReg[tmp_bothash][tmp_hash]['res']
             break
     return res
 
@@ -135,11 +140,11 @@ def replySET_command(plugin_event, Proc, valDict):
             userConfigKey = 'groupMainDice',
             botHash = plugin_event.bot_info.hash
         )
-        if tmp_set_para != None:
+        if tmp_set_para is None:
+            tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strShowGroupMainDiceNone'], dictTValue)
+        else:
             dictTValue['tResult'] = tmp_set_para
             tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strShowGroupMainDice'], dictTValue)
-        else:
-            tmp_reply_str = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strShowGroupMainDiceNone'], dictTValue)
     else:
         if len(tmp_reast_str) > 0:
             if tmp_reast_str.isdigit():
@@ -150,7 +155,7 @@ def replySET_command(plugin_event, Proc, valDict):
                 tmp_set_para = tmp_set_para.upper()
                 tmp_set_para_rd = OlivaDiceCore.onedice.RD(tmp_set_para)
                 tmp_set_para_rd.roll()
-                if tmp_set_para_rd.resError == None:
+                if tmp_set_para_rd.resError is None:
                     tmp_set_para_list = tmp_set_para.split('D')
                     if len(tmp_set_para_list) == 2:
                         if tmp_set_para_list[0].isdigit() and tmp_set_para_list[1].isdigit():
@@ -235,9 +240,7 @@ def replyRR_command(plugin_event, Proc, valDict):
     flag_mode = '默认'
     tmp_user_platform = plugin_event.platform['platform']
     if len(tmp_reast_str) > 0:
-        if not flag_is_from_master and tmp_reast_str in ['debug']:
-            pass
-        else:
+        if flag_is_from_master or tmp_reast_str not in ['debug']:
             flag_mode = tmp_reast_str
     tmp_RDData_str = OlivaDiceCore.onediceOverride.RDDataFormat(
         data = OlivaDiceCore.onediceOverride.getRDDataUser(
@@ -255,9 +258,7 @@ def replyRR_command(plugin_event, Proc, valDict):
             userId = tmp_userID,
             platform = tmp_user_platform
         )
-        if type(tmp_RDDataIntUser) == int:
-            tmp_RDDataIntUser = str(tmp_RDDataIntUser)
-        elif type(tmp_RDDataIntUser) == str:
+        if type(tmp_RDDataIntUser) in [int, str]:
             tmp_RDDataIntUser = str(tmp_RDDataIntUser)
         elif type(tmp_RDDataIntUser) == list:
             tmp_RDDataIntUser = ', '.join([str(tmp_RDDataIntUser_this) for tmp_RDDataIntUser_this in tmp_RDDataIntUser])
@@ -285,46 +286,44 @@ dictSkillCheckRank = {
 }
 
 def get_SkillCheckReasult(tmpSkillCheckType, dictStrCustom):
-    res = dictStrCustom['strPcSkillCheckError']
     if tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_SUCCESS:
-        res = dictStrCustom['strPcSkillCheckSucceed']
+        return dictStrCustom['strPcSkillCheckSucceed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_HARD_SUCCESS:
-        res = dictStrCustom['strPcSkillCheckHardSucceed']
+        return dictStrCustom['strPcSkillCheckHardSucceed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_EXTREME_HARD_SUCCESS:
-        res = dictStrCustom['strPcSkillCheckExtremeHardSucceed']
+        return dictStrCustom['strPcSkillCheckExtremeHardSucceed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_GREAT_SUCCESS:
-        res = dictStrCustom['strPcSkillCheckGreatSucceed']
+        return dictStrCustom['strPcSkillCheckGreatSucceed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FAIL:
-        res = dictStrCustom['strPcSkillCheckFailed']
+        return dictStrCustom['strPcSkillCheckFailed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_GREAT_FAIL:
-        res = dictStrCustom['strPcSkillCheckGreatFailed']
+        return dictStrCustom['strPcSkillCheckGreatFailed']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_01:
-        res = dictStrCustom['strPcSkillCheckFate01']
+        return dictStrCustom['strPcSkillCheckFate01']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_02:
-        res = dictStrCustom['strPcSkillCheckFate02']
+        return dictStrCustom['strPcSkillCheckFate02']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_03:
-        res = dictStrCustom['strPcSkillCheckFate03']
+        return dictStrCustom['strPcSkillCheckFate03']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_04:
-        res = dictStrCustom['strPcSkillCheckFate04']
+        return dictStrCustom['strPcSkillCheckFate04']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_05:
-        res = dictStrCustom['strPcSkillCheckFate05']
+        return dictStrCustom['strPcSkillCheckFate05']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_06:
-        res = dictStrCustom['strPcSkillCheckFate06']
+        return dictStrCustom['strPcSkillCheckFate06']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_07:
-        res = dictStrCustom['strPcSkillCheckFate07']
+        return dictStrCustom['strPcSkillCheckFate07']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_08:
-        res = dictStrCustom['strPcSkillCheckFate08']
+        return dictStrCustom['strPcSkillCheckFate08']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_09:
-        res = dictStrCustom['strPcSkillCheckFate09']
+        return dictStrCustom['strPcSkillCheckFate09']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_10:
-        res = dictStrCustom['strPcSkillCheckFate10']
+        return dictStrCustom['strPcSkillCheckFate10']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_FATE_11:
-        res = dictStrCustom['strPcSkillCheckFate11']
+        return dictStrCustom['strPcSkillCheckFate11']
     elif tmpSkillCheckType == OlivaDiceCore.skillCheck.resultType.SKILLCHECK_NOPE:
-        res = dictStrCustom['strPcSkillCheckNope']
+        return dictStrCustom['strPcSkillCheckNope']
     else:
-        res = dictStrCustom['strPcSkillCheckError']
-    return res
+        return dictStrCustom['strPcSkillCheckError']
 
 
 def replyRAV_command(plugin_event, Proc, valDict):

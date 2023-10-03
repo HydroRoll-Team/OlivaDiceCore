@@ -20,5 +20,5 @@ import platform
 def get_system_proxy():
     res = urllib.request.getproxies()
     for res_this in res:
-        res[res_this] = res[res_this].lstrip('%s://' % res_this)
+        res[res_this] = res[res_this].lstrip(f'{res_this}://')
     return res

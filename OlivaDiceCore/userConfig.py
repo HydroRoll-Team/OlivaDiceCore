@@ -107,7 +107,6 @@ def setUserConfigByKey(userId, userType, platform, userConfigKey, userConfigValu
 def getUserConfigByKey(userId, userType, platform, userConfigKey, botHash):
     global dictUserConfigData
     global dictUserConfigNoteDefault
-    userConfigNoteKey = 'configNote'
     userConfigValue = False
     userHash = getUserHash(
         userId = userId,
@@ -118,6 +117,7 @@ def getUserConfigByKey(userId, userType, platform, userConfigKey, botHash):
         userConfigValue = dictUserConfigNoteDefault[userConfigKey]
     if userHash in dictUserConfigData:
         if botHash in dictUserConfigData[userHash]:
+            userConfigNoteKey = 'configNote'
             if userConfigNoteKey in dictUserConfigData[userHash][botHash]:
                 if userConfigKey in dictUserConfigData[userHash][botHash][userConfigNoteKey]:
                     userConfigValue = dictUserConfigData[userHash][botHash][userConfigNoteKey][userConfigKey]
@@ -126,12 +126,12 @@ def getUserConfigByKey(userId, userType, platform, userConfigKey, botHash):
 def getUserConfigByKeyWithHash(userHash, userConfigKey, botHash):
     global dictUserConfigData
     global dictUserConfigNoteDefault
-    userConfigNoteKey = 'configNote'
     userConfigValue = False
     if userConfigKey in dictUserConfigNoteDefault:
         userConfigValue = dictUserConfigNoteDefault[userConfigKey]
     if userHash in dictUserConfigData:
         if botHash in dictUserConfigData[userHash]:
+            userConfigNoteKey = 'configNote'
             if userConfigNoteKey in dictUserConfigData[userHash][botHash]:
                 if userConfigKey in dictUserConfigData[userHash][botHash][userConfigNoteKey]:
                     userConfigValue = dictUserConfigData[userHash][botHash][userConfigNoteKey][userConfigKey]
@@ -198,9 +198,9 @@ def writeUserConfig(data, updateList):
             userHash = data_this
             for data_userHash_this in data[userHash]:
                 botHash = data_userHash_this
-                releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-                releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user')
-                userConfigDataPath = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user/' + userHash
+                releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+                releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user')
+                userConfigDataPath = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user/{userHash}'
                 with open(userConfigDataPath, 'w', encoding = 'utf-8') as userConfigDataPath_f:
                     userConfigDataPath_f.write(json.dumps(data[userHash], ensure_ascii = False, indent = 4))
 
@@ -214,9 +214,11 @@ def writeUserConfigByUserHash(userHash):
         gUserConfigLock.release()
         for tmp_dictUserConfigData_this_this in tmp_dictUserConfigData_this:
             botHash = tmp_dictUserConfigData_this_this
-            releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-            releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user')
-            userConfigDataPath = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user/' + userHash
+            releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+            releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user')
+            userConfigDataPath = (
+                f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user/{userHash}'
+            )
             with open(userConfigDataPath, 'w', encoding = 'utf-8') as userConfigDataPath_f:
                 userConfigDataPath_f.write(json.dumps(tmp_dictUserConfigData_this, ensure_ascii = False, indent = 4))
 
@@ -226,14 +228,14 @@ def readUserConfig():
     botHash_list = os.listdir(OlivaDiceCore.data.dataDirRoot)
     for botHash_list_this in botHash_list:
         botHash = botHash_list_this
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user')
-        userHash_list = os.listdir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user')
+        userHash_list = os.listdir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user')
         for userHash_list_this in userHash_list:
             userHash = userHash_list_this
-            userConfigDataDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/user'
+            userConfigDataDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/user'
             userConfigDataFile = userHash
-            userConfigDataPath = userConfigDataDir + '/' + userConfigDataFile
+            userConfigDataPath = f'{userConfigDataDir}/{userConfigDataFile}'
             if userHash not in dictUserConfigData:
                 dictUserConfigData[userHash] = {}
             with open(userConfigDataPath, 'r', encoding = 'utf-8') as userConfigDataPath_f:
@@ -245,18 +247,15 @@ def dataUserConfigLoadAll():
     readUserConfig()
 
 def dataUserConfigTotalCount():
-    total_count = 0
-    for dictUserConfigData_this in dictUserConfigData:
-        total_count += 1
-    return total_count
+    return sum(1 for _ in dictUserConfigData)
 
 def getUserHash(userId, userType, platform, subId = None):
     hash_tmp = hashlib.new('md5')
-    if subId != None:
-        tmp_strID = '%s|%s' % (str(subId), str(userId))
-        hash_tmp.update(tmp_strID.encode(encoding='UTF-8'))
-    else:
+    if subId is None:
         hash_tmp.update(str(userId).encode(encoding='UTF-8'))
+    else:
+        tmp_strID = f'{str(subId)}|{str(userId)}'
+        hash_tmp.update(tmp_strID.encode(encoding='UTF-8'))
     hash_tmp.update(str(userType).encode(encoding='UTF-8'))
     hash_tmp.update(str(platform).encode(encoding='UTF-8'))
     if subId != None:
@@ -270,13 +269,24 @@ def releaseDir(dir_path):
 def initDelUTF8WithBom(bot_info_dict):
     for bot_info_dict_this in bot_info_dict:
         botHash = bot_info_dict_this
-        setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console/customReply.json')
-        setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console/helpdocDefault.json')
-        setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console/switch.json')
-    setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/unity/console/customReply.json')
-    setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/unity/console/helpdocDefault.json')
-    setDelUTF8WithBom(OlivaDiceCore.data.dataDirRoot + '/unity/console/switch.json')
-    pass
+        setDelUTF8WithBom(
+            f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console/customReply.json'
+        )
+        setDelUTF8WithBom(
+            f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console/helpdocDefault.json'
+        )
+        setDelUTF8WithBom(
+            f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console/switch.json'
+        )
+    setDelUTF8WithBom(
+        f'{OlivaDiceCore.data.dataDirRoot}/unity/console/customReply.json'
+    )
+    setDelUTF8WithBom(
+        f'{OlivaDiceCore.data.dataDirRoot}/unity/console/helpdocDefault.json'
+    )
+    setDelUTF8WithBom(
+        f'{OlivaDiceCore.data.dataDirRoot}/unity/console/switch.json'
+    )
 
 def setDelUTF8WithBom(filePath):
     flag_is_bom = False

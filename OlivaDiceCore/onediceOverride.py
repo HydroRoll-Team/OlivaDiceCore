@@ -55,7 +55,7 @@ def get_data_from_random_org():
         'User-Agent': OlivaDiceCore.data.bot_version_short_header
     }
     msg_res = req.request("POST", send_url, headers = headers, timeout = 4)
-    res_text = str(msg_res.text)
+    res_text = msg_res.text
     res_text = res_text.lstrip('\n')
     res_text = res_text.rstrip('\n')
     res = res_text.split('\n')
@@ -78,7 +78,7 @@ class RD(OlivaDiceCore.onedice.RD):
     def random(self, nMin, nMax, mode = None):
         global dictRandomInt
         global random_default_mode
-        if mode == None:
+        if mode is None:
             mode = random_default_mode
         res = None
         if mode == 'default':
@@ -88,33 +88,28 @@ class RD(OlivaDiceCore.onedice.RD):
             if len(dictRandomInt['default']) <= 0:
                 try:
                     tmp_random_int_list = get_data_from_random_org()
-                    if tmp_random_int_list == None:
+                    if tmp_random_int_list is None:
                         random_default_mode = 'default'
-                        res = random.randint(nMin, nMax)
-                        return res
+                        return random.randint(nMin, nMax)
                     if len(tmp_random_int_list) > 0:
                         dictRandomInt['default'] = tmp_random_int_list
                     else:
-                        res = random.randint(nMin, nMax)
-                        return res
+                        return random.randint(nMin, nMax)
                 except:
                     random_default_mode = 'default'
-                    res = random.randint(nMin, nMax)
-                    return res
+                    return random.randint(nMin, nMax)
             tmp_random_int_this = dictRandomInt['default'].pop()
             tmp_random_int_data = None
             if type(tmp_random_int_this) == str:
                 if tmp_random_int_this.isdigit() or (len(tmp_random_int_this) > 2 and tmp_random_int_this[0] == '-' and tmp_random_int_this[1:].isdigit()):
-                    tmp_random_int_data = int((int(tmp_random_int_this) + 1000000000) % (nMax - nMin + 1)) + nMin
-                    res = tmp_random_int_data
-                    return res
+                    return int((int(tmp_random_int_this) + 1000000000) % (nMax - nMin + 1)) + nMin
             res = random.randint(nMin, nMax)
         return res
 
 OlivaDiceCore.onedice.RD = RD
 
 def saveRDDataUser(data:OlivaDiceCore.onedice.RD, botHash:str, userId:str, platform:str):
-    if data.resError == None:
+    if data.resError is None:
         OlivaDiceCore.userConfig.setUserConfigByKey(
             userConfigKey = 'RDRecord',
             userConfigValue = data.resDetailData,
@@ -152,63 +147,45 @@ def saveRDDataUser(data:OlivaDiceCore.onedice.RD, botHash:str, userId:str, platf
 
 # getRDDataUser
 def getRDDataUser(botHash:str, userId:str, platform:str):
-    res = getRDDataUserByHash(
-        botHash = botHash,
-        userHash = OlivaDiceCore.userConfig.getUserHash(
-            userId = userId,
-            userType = 'user',
-            platform = platform
-        )
+    return getRDDataUserByHash(
+        botHash=botHash,
+        userHash=OlivaDiceCore.userConfig.getUserHash(
+            userId=userId, userType='user', platform=platform
+        ),
     )
-    return res
 
 def getRDDataUserByHash(botHash:str, userHash:str):
-    res = OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
-        userConfigKey = 'RDRecord',
-        botHash = botHash,
-        userHash = userHash
+    return OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
+        userConfigKey='RDRecord', botHash=botHash, userHash=userHash
     )
-    return res
 
 # getRDDataRawUser
 def getRDDataRawUser(botHash:str, userId:str, platform:str):
-    res = getRDDataRawUserByHash(
-        botHash = botHash,
-        userHash = OlivaDiceCore.userConfig.getUserHash(
-            userId = userId,
-            userType = 'user',
-            platform = platform
-        )
+    return getRDDataRawUserByHash(
+        botHash=botHash,
+        userHash=OlivaDiceCore.userConfig.getUserHash(
+            userId=userId, userType='user', platform=platform
+        ),
     )
-    return res
 
 def getRDDataRawUserByHash(botHash:str, userHash:str):
-    res = OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
-        userConfigKey = 'RDRecordRaw',
-        botHash = botHash,
-        userHash = userHash
+    return OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
+        userConfigKey='RDRecordRaw', botHash=botHash, userHash=userHash
     )
-    return res
 
 # getRDDataIntUser
 def getRDDataIntUser(botHash:str, userId:str, platform:str):
-    res = getRDDataIntUserByHash(
-        botHash = botHash,
-        userHash = OlivaDiceCore.userConfig.getUserHash(
-            userId = userId,
-            userType = 'user',
-            platform = platform
-        )
+    return getRDDataIntUserByHash(
+        botHash=botHash,
+        userHash=OlivaDiceCore.userConfig.getUserHash(
+            userId=userId, userType='user', platform=platform
+        ),
     )
-    return res
 
 def getRDDataIntUserByHash(botHash:str, userHash:str):
-    res = OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
-        userConfigKey = 'RDRecordInt',
-        botHash = botHash,
-        userHash = userHash
+    return OlivaDiceCore.userConfig.getUserConfigByKeyWithHash(
+        userConfigKey='RDRecordInt', botHash=botHash, userHash=userHash
     )
-    return res
 
 # format
 dictFormatMappingMode = {
@@ -260,10 +237,7 @@ def RDDataFormat_default_is1step(data:list):
             ) and (
                 'v' in data[0]['key'] and type(data[0]['key']['v']) == dict
             ):
-                if data[0]['key']['l'] == 1:
-                    res = 1
-                else:
-                    res = 2
+                res = 1 if data[0]['key']['l'] == 1 else 2
                 for v_this in data[0]['key']['v']:
                     if data[0]['key']['v'][v_this] != None:
                         res = False

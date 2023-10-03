@@ -105,10 +105,7 @@ lenOperationMax = 3
 '''
 class Stack(object):
     def __init__(self, initList = None):
-        if initList == None:
-            self.data = []
-        else:
-            self.data = initList
+        self.data = [] if initList is None else initList
 
     def push(self, data):
         self.data.append(data)
@@ -172,22 +169,13 @@ class calNode(object):
         return '<calNode \'%s\' %s>' % (self.data, self.type)
 
     def isNumber(self):
-        if self.type == self.nodeType.NUMBER:
-            return True
-        else:
-            return False
+        return self.type == self.nodeType.NUMBER
 
     def isOperation(self):
-        if self.type == self.nodeType.OPERATION:
-            return True
-        else:
-            return False
+        return self.type == self.nodeType.OPERATION
 
     def isTuple(self):
-        if self.type == self.nodeType.TUPLE:
-            return True
-        else:
-            return False
+        return self.type == self.nodeType.TUPLE
 
     def getPriority(self):
         return
@@ -206,10 +194,7 @@ class calNumberNode(calNode):
         self.num = 0
 
     def getInt(self):
-        if self.data.isdigit():
-            return int(self.data)
-        else:
-            return 0
+        return int(self.data) if self.data.isdigit() else 0
 
     def appendInt(self, data):
         if str(data).isdigit():
@@ -255,8 +240,23 @@ class calOperationNode(calNode):
     def initOperation(self):
         if self.inOperation():
             self.getPriority()
-        if self.data == '-':
+        if self.data == '$t':
+            self.valLeftDefault = 1
+            self.vals['='] = None
+        elif self.data == '-':
             self.valStarterLeftDefault = 0
+        elif self.data == '?':
+            self.valRightDefault = 0
+            self.vals[':'] = None
+        elif self.data == 'a':
+            self.vals['k'] = 8
+            self.vals['q'] = None
+            self.vals['m'] = 10
+        elif self.data in ['b', 'p']:
+            self.valLeftDefault = 1
+            self.valRightDefault = 1
+        elif self.data == 'c':
+            self.vals['m'] = 10
         elif self.data == 'd':
             self.valLeftDefault = 1
             self.valRightDefault = 100
@@ -267,39 +267,13 @@ class calOperationNode(calNode):
             self.vals['a'] = None
             self.valsDefault['p'] = 1
             self.valsDefault['b'] = 1
-        elif self.data == 'a':
-            self.vals['k'] = 8
-            self.vals['q'] = None
-            self.vals['m'] = 10
-        elif self.data == 'c':
-            self.vals['m'] = 10
-        elif self.data == 'b':
-            self.valLeftDefault = 1
-            self.valRightDefault = 1
-        elif self.data == 'p':
-            self.valLeftDefault = 1
-            self.valRightDefault = 1
         elif self.data == 'f':
             self.valLeftDefault = 4
             self.valRightDefault = 3
-        elif self.data == '?':
-            self.valRightDefault = 0
-            self.vals[':'] = None
-        elif self.data == 's':
-            self.valRightDefault = 1
-        elif self.data == 'kh':
-            self.valRightDefault = 1
-        elif self.data == 'kl':
-            self.valRightDefault = 1
-        elif self.data == 'dh':
-            self.valRightDefault = 1
-        elif self.data == 'dl':
+        elif self.data in ['s', 'kh', 'kl', 'dh', 'dl']:
             self.valRightDefault = 1
         elif self.data == 'tp':
             self.valRightDefault = 0
-        elif self.data == '$t':
-            self.valLeftDefault = 1
-            self.vals['='] = None
         if self.customDefault != None:
             if self.data in self.customDefault:
                 if 'leftD' in self.customDefault[self.data]:
@@ -365,7 +339,7 @@ class RD(object):
                 self.__replace()
         except Exception as e:
             traceback.print_exc()
-            if self.resError == None:
+            if self.resError is None:
                 self.resError = self.resErrorType.UNKNOWN_REPLACE_FATAL
         if self.resError != None:
             return
@@ -373,7 +347,7 @@ class RD(object):
             self.__getCalTree()
         except Exception as e:
             traceback.print_exc()
-            if self.resError == None:
+            if self.resError is None:
                 self.resError = self.resErrorType.UNKNOWN_GENERATE_FATAL
         if self.resError != None:
             return
@@ -381,22 +355,21 @@ class RD(object):
             resRecursiveObj = self.__calculate()
         except Exception as e:
             traceback.print_exc()
-            if self.resError == None:
+            if self.resError is None:
                 self.resError = self.resErrorType.UNKNOWN_COMPLETE_FATAL
-        if self.resError != None:
+        if self.resError is not None:
             return
-        else:
-            self.resInt = resRecursiveObj.resInt
-            self.resIntMin = resRecursiveObj.resIntMin
-            self.resIntMax = resRecursiveObj.resIntMax
-            self.resIntMinType = resRecursiveObj.resIntMinType
-            self.resIntMaxType = resRecursiveObj.resIntMaxType
-            self.resDetail = resRecursiveObj.resDetail
-            self.resDetailData = resRecursiveObj.resDetailData
-            self.resMetaTupleEnable = resRecursiveObj.resMetaTupleEnable
-            if not self.resMetaTupleEnable:
-                self.resMetaTupleEnable = self.check_metaTuple(resRecursiveObj.resMetaTuple)
-            self.resMetaTuple = self.get_from_metaTuple(resRecursiveObj.resMetaTuple)
+        self.resInt = resRecursiveObj.resInt
+        self.resIntMin = resRecursiveObj.resIntMin
+        self.resIntMax = resRecursiveObj.resIntMax
+        self.resIntMinType = resRecursiveObj.resIntMinType
+        self.resIntMaxType = resRecursiveObj.resIntMaxType
+        self.resDetail = resRecursiveObj.resDetail
+        self.resDetailData = resRecursiveObj.resDetailData
+        self.resMetaTupleEnable = resRecursiveObj.resMetaTupleEnable
+        if not self.resMetaTupleEnable:
+            self.resMetaTupleEnable = self.check_metaTuple(resRecursiveObj.resMetaTuple)
+        self.resMetaTuple = self.get_from_metaTuple(resRecursiveObj.resMetaTuple)
         return
 
     class resErrorType(Enum):

@@ -86,13 +86,13 @@ def initConsoleSwitchByBotDict(botDict):
 def saveConsoleSwitch():
     global dictConsoleSwitch
     releaseDir(OlivaDiceCore.data.dataDirRoot)
+    consoleSwitchFile = 'switch.json'
     for dictConsoleSwitch_this in dictConsoleSwitch:
         botHash = dictConsoleSwitch_this
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
-        consoleSwitchDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
-        consoleSwitchFile = 'switch.json'
-        consoleSwitchPath = consoleSwitchDir + '/' + consoleSwitchFile
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
+        consoleSwitchDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
+        consoleSwitchPath = f'{consoleSwitchDir}/{consoleSwitchFile}'
         with open(consoleSwitchPath, 'w', encoding = 'utf-8') as consoleSwitchPath_f:
             consoleSwitchPath_f.write(json.dumps(dictConsoleSwitch[botHash], ensure_ascii = False, indent = 4))
 
@@ -100,13 +100,13 @@ def readConsoleSwitch():
     global dictConsoleSwitch
     releaseDir(OlivaDiceCore.data.dataDirRoot)
     botHash_list = os.listdir(OlivaDiceCore.data.dataDirRoot)
+    consoleSwitchFile = 'switch.json'
     for botHash_list_this in botHash_list:
         botHash = botHash_list_this
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console')
-        consoleSwitchDir = OlivaDiceCore.data.dataDirRoot + '/' + botHash + '/console'
-        consoleSwitchFile = 'switch.json'
-        consoleSwitchPath = consoleSwitchDir + '/' + consoleSwitchFile
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console')
+        consoleSwitchDir = f'{OlivaDiceCore.data.dataDirRoot}/{botHash}/console'
+        consoleSwitchPath = f'{consoleSwitchDir}/{consoleSwitchFile}'
         try:
             with open(consoleSwitchPath, 'r', encoding = 'utf-8') as consoleSwitchPath_f:
                 dictConsoleSwitch[botHash].update(json.loads(consoleSwitchPath_f.read()))

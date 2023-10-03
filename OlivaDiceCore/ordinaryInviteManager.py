@@ -18,11 +18,11 @@ import OlivOS
 import OlivaDiceCore
 
 def unity_group_invite_request(plugin_event, Proc):
-    flag_enable_default = 1
     flag_enable = 1
     flag_enable = OlivaDiceCore.console.getConsoleSwitchByHash('autoAcceptGroupAdd', 'unity')
     flag_enable = OlivaDiceCore.console.getConsoleSwitchByHash('autoAcceptGroupAdd', plugin_event.bot_info.hash)
-    if flag_enable == None:
+    if flag_enable is None:
+        flag_enable_default = 1
         flag_enable = flag_enable_default
 
     if flag_enable == 1:
@@ -42,7 +42,7 @@ def unity_group_invite_request(plugin_event, Proc):
                             dictTValue['tInvaterId'] = str(plugin_event.data.user_id)
                             dictTValue['tComment'] = plugin_event.data.comment
                             if flag_enable == 0:
-                                dictTValue['tAcceptCommand'] = '.master accept %s' % (str(plugin_event.data.flag),)
+                                dictTValue['tAcceptCommand'] = f'.master accept {str(plugin_event.data.flag)}'
                                 dictTValue['tResult'] = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strBotAddGroupNoticeIgnoreResult'], dictTValue)
                             elif flag_enable == 1:
                                 dictTValue['tResult'] = OlivaDiceCore.msgCustomManager.formatReplySTR(dictStrCustom['strAccept'], dictTValue)
@@ -50,11 +50,11 @@ def unity_group_invite_request(plugin_event, Proc):
                             OlivaDiceCore.msgReply.sendMsgByEvent(plugin_event, tmp_reply_str, noticeGroupList_this[0], 'group')
 
 def unity_friend_add_request(plugin_event, Proc):
-    flag_enable_default = 1
     flag_enable = 1
     flag_enable = OlivaDiceCore.console.getConsoleSwitchByHash('autoAcceptFriendAdd', 'unity')
     flag_enable = OlivaDiceCore.console.getConsoleSwitchByHash('autoAcceptFriendAdd', plugin_event.bot_info.hash)
-    if flag_enable == None:
+    if flag_enable is None:
+        flag_enable_default = 1
         flag_enable = flag_enable_default
 
     if flag_enable == 1:
@@ -96,10 +96,10 @@ def unity_group_member_increase(plugin_event, Proc):
     replyMsg = OlivaDiceCore.msgReply.replyMsg
     tmp_hagID = str(plugin_event.data.group_id)
     fake_plugin_event = OlivaDiceCore.msgEvent.getReRxEvent_group_message(plugin_event, '[加群]')
-    if fake_plugin_event.data.host_id != None:
-        tmp_hagID = '%s|%s' % (str(plugin_event.data.host_id), str(plugin_event.data.group_id))
-    else:
+    if fake_plugin_event.data.host_id is None:
         tmp_hagID = str(plugin_event.data.group_id)
+    else:
+        tmp_hagID = f'{str(plugin_event.data.host_id)}|{str(plugin_event.data.group_id)}'
     reply_msg = OlivaDiceCore.userConfig.getUserConfigByKey(
         userConfigKey = 'welcomeMsg',
         botHash = plugin_event.bot_info.hash,

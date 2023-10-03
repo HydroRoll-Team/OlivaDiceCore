@@ -49,12 +49,13 @@ def unity_heartbeat(plugin_event, Proc):
             tmp_nickname = None
             tmp_user_id = plugin_event.bot_info.id
             tmp_master = ''
-            tmp_master_list_1 = []
             if tmp_res['active'] == True:
                 tmp_nickname = tmp_res['data']['name']
                 OlivaDiceCore.msgCustom.dictStrCustomDict[plugin_event.bot_info.hash]['strBotName'] = tmp_res['data']['name']
-            for tmp_master_list_this in tmp_master_list:
-                tmp_master_list_1.append(str(tmp_master_list_this[0]))
+            tmp_master_list_1 = [
+                str(tmp_master_list_this[0])
+                for tmp_master_list_this in tmp_master_list
+            ]
             tmp_master = ','.join(tmp_master_list_1)
         except:
             pass
@@ -88,9 +89,9 @@ def do_pulse(user_id, name, token, time_ts, masterid = '0', platform = 'default'
     }
     payload = tmp_payload_dict
     send_url = url
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': OlivaDiceCore.data.bot_version_short_header
-    }
     if send_url != None:
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': OlivaDiceCore.data.bot_version_short_header
+        }
         msg_res = req.request("POST", send_url, headers = headers, data = payload)

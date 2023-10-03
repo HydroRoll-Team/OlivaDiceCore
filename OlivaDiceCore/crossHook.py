@@ -35,21 +35,12 @@ dictReplyContextReg = {}
 
 def msgHook(event, funcType, sender, dectData, message):
     [host_id, group_id, user_id] = dectData
-    tmp_name = 'N/A'
-    tmp_id = -1
-    if 'name' in sender:
-        tmp_name = sender['name']
-    if 'id' in sender:
-        tmp_id = sender['id']
+    tmp_name = sender['name'] if 'name' in sender else 'N/A'
+    tmp_id = sender['id'] if 'id' in sender else -1
     return None
 
 def pokeHook(plugin_event, type = 'group'):
-    if type == 'group':
-        return OlivaDiceCore.data.bot_info
-    elif type == 'private':
-        return OlivaDiceCore.data.bot_info
-    else:
-        return OlivaDiceCore.data.bot_info
+    return OlivaDiceCore.data.bot_info
 
 def msgFormatHook(data:str, valDict:dict):
     return data

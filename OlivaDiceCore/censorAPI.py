@@ -53,11 +53,11 @@ def readConfigListByHash(bot_hash):
     global gCensorConfigList, gCensorConfigListUnitTemplate
     res = copy.deepcopy(gCensorConfigListUnitTemplate)
     releaseDir(OlivaDiceCore.data.dataDirRoot)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/console')
-    fileDir = OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/console'
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/console')
+    fileDir = f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/console'
     fileName = 'censor.json'
-    path = fileDir + '/' + fileName
+    path = f'{fileDir}/{fileName}'
     try:
         with open(path, 'rb') as path_f:
             path_fs = formatUTF8WithBOM(path_f.read()).decode('utf-8')
@@ -70,11 +70,11 @@ def writeConfigListByHash(bot_hash):
     global gCensorConfigList, gCensorConfigListUnitTemplate
     res = copy.deepcopy(gCensorConfigListUnitTemplate)
     releaseDir(OlivaDiceCore.data.dataDirRoot)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/console')
-    fileDir = OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/console'
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/console')
+    fileDir = f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/console'
     fileName = 'censor.json'
-    path = fileDir + '/' + fileName
+    path = f'{fileDir}/{fileName}'
     if bot_hash in gCensorConfigList:
         res = gCensorConfigList[bot_hash]
     try:
@@ -94,12 +94,13 @@ def addConfigList(bot_hash, setWord):
 
 def getConfigList(bot_hash):
     global gCensorConfigList
-    res = []
-    if bot_hash in gCensorConfigList \
-    and 'censorList' in gCensorConfigList[bot_hash] \
-    and type(gCensorConfigList[bot_hash]['censorList']) is list:
-        res = gCensorConfigList[bot_hash]['censorList']
-    return res
+    return (
+        gCensorConfigList[bot_hash]['censorList']
+        if bot_hash in gCensorConfigList
+        and 'censorList' in gCensorConfigList[bot_hash]
+        and type(gCensorConfigList[bot_hash]['censorList']) is list
+        else []
+    )
 
 def delConfigList(bot_hash, setWord):
     global gCensorConfigList
@@ -119,9 +120,9 @@ def initCensor(bot_info_dict):
     dictTValue.update(dictGValue)
 
     releaseDir(OlivaDiceCore.data.dataDirRoot)
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/unity')
-    releaseDir(OlivaDiceCore.data.dataDirRoot + '/unity/censor')
-    fileDir = OlivaDiceCore.data.dataDirRoot + '/unity/censor'
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/unity')
+    releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/unity/censor')
+    fileDir = f'{OlivaDiceCore.data.dataDirRoot}/unity/censor'
     fileList = os.listdir(fileDir)
     censorList_unity = []
     dictTValue['tName'] = '全局'
@@ -129,28 +130,27 @@ def initCensor(bot_info_dict):
     writeConfigListByHash('unity')
     for fileList_this in fileList:
         fileName = fileList_this
-        filePath = fileDir + '/' + fileName
+        filePath = f'{fileDir}/{fileName}'
         censorList_unity += readListFromFile(filePath)
         gCensorList['unity'] = censorList_unity
     for bot_hash in bot_info_dict:
         dictTValue['tName'] = bot_hash
         if bot_hash in bot_info_dict:
-            dictTValue['tName'] = '%s|%s' % (
-                bot_info_dict[bot_hash].platform['platform'],
-                str(bot_info_dict[bot_hash].id)
-            )
+            dictTValue[
+                'tName'
+            ] = f"{bot_info_dict[bot_hash].platform['platform']}|{str(bot_info_dict[bot_hash].id)}"
         gCensorInfoList[bot_hash] = dictTValue['tName']
         censorList_this = []
         releaseDir(OlivaDiceCore.data.dataDirRoot)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash)
-        releaseDir(OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/censor')
-        fileDir = OlivaDiceCore.data.dataDirRoot + '/' + bot_hash + '/censor'
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}')
+        releaseDir(f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/censor')
+        fileDir = f'{OlivaDiceCore.data.dataDirRoot}/{bot_hash}/censor'
         fileList = os.listdir(fileDir)
         readConfigListByHash(bot_hash)
         writeConfigListByHash(bot_hash)
         for fileList_this in fileList:
             fileName = fileList_this
-            filePath = fileDir + '/' + fileName
+            filePath = f'{fileDir}/{fileName}'
             censorList_this += readListFromFile(filePath)
         gCensorList[bot_hash] = censorList_this
         initCensorByHash(bot_hash)
